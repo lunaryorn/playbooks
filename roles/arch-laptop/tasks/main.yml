@@ -1,0 +1,18 @@
+- name: Configure kernel parameters for laptops
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_file: /etc/sysctl.d/10-playbooks-arch-laptop.conf
+  loop: "{{ items | dict2items }}"
+  vars:
+    items:
+      # Disable NMI watchdog (powertop rec.)
+      kernel.nmi_watchdog: "0"
+      # Increase writeback time (default 500, powertop rec.)
+      vm.dirty_writeback_entisecs: "1500"
+
+- name: Install packages for laptops
+  community.general.pacman:
+    state: present
+    name:
+    - powertop

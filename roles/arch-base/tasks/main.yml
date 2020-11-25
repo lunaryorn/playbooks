@@ -88,10 +88,12 @@
     - lsb-release
     - ansible
     - sudo
+    - fwupd
     # Archlinux & Pacman tools
     - archlinux-contrib
     - pacman-contrib
     - reflector
+    - pkgfile
     # Manage EFI boot loaders
     - efibootmgr
     # Help
@@ -209,6 +211,8 @@
   ansible.builtin.systemd: unit=reflector.timer enabled=true state=started
 - name: Periodically clean pacman cache
   ansible.builtin.systemd: unit=paccache.timer enabled=true state=started
+- name: Periodically update pacman file database
+  ansible.builtin.systemd: unit=pkgfile-update.timer enabled=true state=started
 
 - name: Remove legacy files
   ansible.builtin.file: path={{ item }} state=absent

@@ -1,0 +1,120 @@
+- name: Configure kernel parameters for desktop systems
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_file: /etc/sysctl.d/10-playbooks-arch-desktop.conf
+  loop: "{{ items | dict2items }}"
+  vars:
+    items:
+      # The magic SysRq key enables certain keyboard combinations to be
+      # interpreted by the kernel to help with debugging. The kernel will respond
+      # to these keys regardless of the current running applications.
+      #
+      # In general, the magic SysRq key is not needed for the average Ubuntu
+      # system, and having it enabled by default can lead to security issues on
+      # the console such as being able to dump memory or to kill arbitrary
+      # processes including the running screen lock.
+      #
+      # Here is the list of possible values:
+      #   0 - disable sysrq completely
+      #   1 - enable all functions of sysrq
+      #  >1 - enable certain functions by adding up the following values:
+      #          2 - enable control of console logging level
+      #          4 - enable control of keyboard (SAK, unraw)
+      #          8 - enable debugging dumps of processes etc.
+      #         16 - enable sync command
+      #         32 - enable remount read-only
+      #         64 - enable signalling of processes (term, kill, oom-kill)
+      #        128 - allow reboot/poweroff
+      #        256 - allow nicing of all RT tasks
+      #
+      #   For example, to enable both control of console logging level and
+      #   debugging dumps of processes: kernel.sysrq = 10
+      #
+      # 128 + 32 + 16
+      kernel.sysrq: "176"
+
+- name: Install desktop packages
+  community.general.pacman:
+    state: present
+    name:
+    # USB and USB storage file systems
+    - ntfs-3g
+    - exfat-utils
+    - usbutils
+    - trash-cli
+    - wl-clipboard
+    - xsel
+    - xdg-user-dirs
+    - d-feet
+    - dconf-editor
+    # Networking for desktops
+    - networkmanager
+    - avahi
+    - nss-mdns
+    # Desktop services
+    - cups
+    - hplip
+    - bluez
+    - sane
+    # Desktop themes
+    - xcursor-pinux
+    - materia-gtk-theme
+    # Sandboxing for proprietary desktop apps
+    - flatpak
+    - xdg-desktop-portal-gtk
+    # Desktop apps
+    - keepassxc
+    - firefox
+    - firefox-i18n-de
+    - zathura
+    - zim
+    - signal-desktop
+    # Fonts
+    - noto-fonts
+    - noto-fonts-extra
+    - noto-fonts-emoji
+    - ttf-liberation
+    - ttf-caladea
+    - ttf-carlito
+    - ttf-cascadia-code
+    - ttf-fira-code
+    - ttf-fira-mono
+    - ttf-fira-sans
+    - adobe-source-code-pro-fonts
+    - adobe-source-sans-pro-fonts
+    - adobe-source-serif-pro-fonts
+    - ttf-roboto
+    - ttf-ubuntu-font-family
+    - ttf-fira-mono
+    - ttf-fira-sans
+- name: Install optional dependencies
+  community.general.pacman:
+    state: present
+    extra_args: --asdeps
+    name:
+      # zathura: PDF support
+      - zathura-pdf-mupdf
+      # zim: source code viewing and spell checking
+      - gtksourceview3
+      - gtkspell3
+
+- name: Start desktop services
+  ansible.builtin.systemd: unit={{ item }} enabled=true state=started
+  loop:
+  - NetworkManager.service
+  - avahi-daemon.service
+  - bluetooth.service
+  - org.cups.cupsd.service
+
+- name: Configure font settings
+  ansible.builtin.file:
+    src: "../conf.avail/{{ item }}.conf"
+    dest: "/etc/fonts/conf.d/{{ item }}.conf"
+    state: link
+  loop:
+    # Hinting and subpixel aliasing
+    - 10-hinting-slight
+    - 10-sub-pixel-rgb
+    # LCD filter, see https://wiki.archlinux.org/index.php/Font_configuration#LCD_filter
+    - 11-lcdfilter-default

@@ -4,3 +4,7 @@
     tags: [base]
   - role: arch-aur
     tags: [base, aur]
+  - role: arch-laptop
+    tags: [base]
+  - role: arch-desktop
+    tags: [desktop]
