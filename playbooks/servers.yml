@@ -1,0 +1,5 @@
+- name: Archlinux server
+  hosts: swsnr.de
+  roles:
+  - role: arch-base
+    tags: [base]
