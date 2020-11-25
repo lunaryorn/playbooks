@@ -1,7 +1,7 @@
 - name: Configure static hosts
   ansible.builtin.copy:
     dest: /etc/hosts
-    mode: 644
+    mode: "0644"
     owner: root
     group: root
     # See <https://wiki.archlinux.org/index.php/Installation_guide#Network_configuration>
@@ -17,6 +17,55 @@
     - "de_DE.UTF-8"
     - "en_GB.UTF-8"
     - "en_US.UTF-8"
+
+- name: Create pacman config directory
+  ansible.builtin.file: path=/etc/pacman.d/conf.d state=directory mode=0755
+- name: Configure pacman
+  ansible.builtin.copy:
+    dest: /etc/pacman.conf
+    mode: "0644"
+    owner: root
+    group: root
+    src: pacman.conf
+- name: Configure pacman options
+  ansible.builtin.copy:
+    dest: /etc/pacman.d/conf.d/10-options
+    mode: "0644"
+    owner: root
+    group: root
+    content: |
+      # Colorized output and better download stats
+      Color
+      TotalDownload
+      VerbosePkgLists
+      CheckSpace
+      # Require signatures
+      SigLevel = Required DatabaseOptional
+      LocalFileSigLevel = Optional
+- name: Configure core pacman repositories
+  ansible.builtin.copy:
+    dest: /etc/pacman.d/conf.d/50-core-repos
+    mode: "0644"
+    owner: root
+    group: root
+    content: |
+      [core]
+      Include = /etc/pacman.d/mirrorlist
+
+      [extra]
+      Include = /etc/pacman.d/mirrorlist
+
+      [community]
+      Include = /etc/pacman.d/mirrorlist
+- name: Configure multilib repository
+  ansible.builtin.copy:
+    dest: /etc/pacman.d/conf.d/60-multilib
+    mode: "0644"
+    owner: root
+    group: root
+    content: |
+      [multilib]
+      Include = /etc/pacman.d/mirrorlist
 
 - name: Install early boot packages
   community.general.pacman:
@@ -55,6 +104,7 @@
     - fd
     - ripgrep
     - bat
+    - mdcat
     - nnn
     - neovim
     - htop

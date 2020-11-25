@@ -2,3 +2,5 @@
   roles:
   - role: arch-base
     tags: [base]
+  - role: arch-aur
+    tags: [base, aur]

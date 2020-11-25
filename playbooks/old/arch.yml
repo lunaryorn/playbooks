@@ -42,25 +42,6 @@
         # 128 + 32 + 16
         kernel.sysrq: "176"
 
-  # Packages
-  - name: Configure multilib repo
-    blockinfile:
-      path: /etc/pacman.conf
-      content: |
-        [multilib]
-        Include = /etc/pacman.d/mirrorlist
-      insertbefore: '^#\[multilib\]'
-      marker: '# {mark} ANSIBLE MULTILIB REPO'
-    tags: pacman
-  - name: Configure pacman
-    lineinfile:
-      path: /etc/pacman.conf
-      insertafter: "^#{{item}}"
-      line: '{{item}}'
-    loop:
-      - Color
-      - TotalDownload
-    tags: pacman
   - name: Install packages
     pacman:
       state: present
@@ -75,28 +56,14 @@
       - snap-pac
       # Additional pacman tools
       - pkgfile
-      - aurpublish
-      - namcap
-    - oxipng
-
-
+      - oxipng
       - trash-cli
       # Tools
-      - powertop
-      - iotop
-      - rsync
-      - mdcat
-      - tree
-      - nnn
       - youtube-dl
-      - oxipng
       # Networking
       - networkmanager
       - avahi
       - nss-mdns
-      # Package building
-      - base-devel
-      - devtools
       # Development
       - httpie
       - meld
@@ -244,17 +211,6 @@
         - qemu
 
   # Configuration
-  - name: Create directory for sudo settings
-    file:
-      path: /etc/sudoers.d
-      state: directory
-      mode: "0700"
-  - name: Allow wheel group to become root via sudo
-    copy:
-      dest: /etc/sudoers.d/10-wheel
-      content: |
-        %wheel ALL=(ALL:ALL) ALL
-      mode: "0600"
   - name: Enable and start services
     systemd:
       unit: "{{ item }}"
@@ -345,41 +301,7 @@
           title: Arch LTS
           linux: linux-lts
 
-  # Local AUR repo
-  - name: Create pkgrepo dir
-    file:
-      name: /srv/pkgrepo
-      state: directory
-      mode: "0755"
-  - name: Create aur repo subvolume
-    command:
-      cmd: btrfs subvolume create /srv/pkgrepo/aur/
-      creates: /srv/pkgrepo/aur/
-  - name: Check that the aur directory is a subvolume
-    command:
-      cmd: btrfs subvolume show /srv/pkgrepo/aur/
-    changed_when: False
-  - name: Initialize package database
-    command:
-      cmd: repo-add /srv/pkgrepo/aur/aur.db.tar.xz
-      creates: /srv/pkgrepo/aur/aur.db.tar.xz
-  - name: Set default ACL for /srv/pkgrepo/aur to allow all users to read files regardless
-    acl:
-      path: "/srv/pkgrepo/aur"
-      default: true
-      state: present
-      follow: no
-      etype: other
-      permissions: "r--"
-  - name: Configure AUR repository
-    blockinfile:
-      path: /etc/pacman.conf
-      content: |
-        [aur]
-        SigLevel = Optional TrustAll
-        Server = file:///srv/pkgrepo/aur
-      marker: '# {mark} ANSIBLE LOCAL AUR REPO'
-    tags: pacman
+
 
   - name: Packages from AUR and my local repo
     pacman:
@@ -399,5 +321,3 @@
     systemd:
       unit: systemd-resolved
       state: restarted
-  - name: "mkinitcpio"
-    command: mkinitcpio -p linux linux-lts

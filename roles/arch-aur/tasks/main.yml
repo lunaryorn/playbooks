@@ -1,0 +1,50 @@
+# Local AUR repo
+- name: Create pkgrepo dir
+  ansible.builtin.file:
+    name: /srv/pkgrepo
+    state: directory
+    mode: "0755"
+- name: Create aur repo subvolume
+  ansible.builtin.command:
+    argv: [btrfs, subvolume, create, /srv/pkgrepo/aur/]
+    creates: /srv/pkgrepo/aur/
+- name: Check that the aur directory is a subvolume
+  ansible.builtin.command:
+    argv: [btrfs, subvolume, show, /srv/pkgrepo/aur/]
+  changed_when: False
+- name: Initialize package database
+  ansible.builtin.command:
+    argv: [repo-add, /srv/pkgrepo/aur/aur.db.tar.xz]
+    creates: /srv/pkgrepo/aur/aur.db.tar.xz
+- name: Set default ACL for /srv/pkgrepo/aur to allow all users to read files regardless
+  ansible.posix.acl:
+    path: "/srv/pkgrepo/aur"
+    default: true
+    state: present
+    follow: no
+    etype: other
+    permissions: "r--"
+
+- name: Configure local AUR repository
+  ansible.builtin.copy:
+    dest: /etc/pacman.d/conf.d/80-aur-repo
+    mode: "0644"
+    owner: root
+    group: root
+    content: |
+      [aur]
+      SigLevel = Optional TrustAll
+      Server = file:///srv/pkgrepo/aur
+
+- name: Install packaging tools
+  community.general.pacman:
+    state: present
+    name:
+    # Building
+    - base-devel
+    # Publish packages to AUR
+    - aurpublish
+    # Validate aur packages
+    - namcap
+    # Tools for package building
+    - devtools
