@@ -2,67 +2,6 @@
   hosts: localhost
   tasks:
   # Base setup
-  - name: Configure static hosts
-    lineinfile:
-      path: /etc/hosts
-      line: "{{ item }}"
-    loop:
-      # See <https://wiki.archlinux.org/index.php/Installation_guide#Network_configuration>
-      - "127.0.0.1 localhost"
-      - "::1 localhost"
-  - name: Enable locales
-    locale_gen:
-      name: "{{ item }}"
-    loop:
-      - "de_DE.UTF-8"
-      - "en_GB.UTF-8"
-      - "en_US.UTF-8"
-  - name: Configure console
-    copy:
-      dest: /etc/vconsole.conf
-      content: |
-        KEYMAP=us
-      mode: "0644"
-    notify:
-      - mkinitcpio
-  - name: Set system locale to de_DE.utf8
-    copy:
-      dest: /etc/locale.conf
-      content: |
-        LANG=de_DE.UTF-8
-      mode: "0644"
-  - name: Set timezone
-    timezone:
-      name: "Europe/Berlin"
-  - name: Install base packages
-    pacman:
-      state: present
-      name:
-      - base
-      - linux-firmware
-      - intel-ucode
-      - btrfs-progs
-      # Kernels
-      - linux
-      - linux-lts
-      # Manage EFI boot loaders
-      - efibootmgr
-    notify:
-      - mkinitcpio
-  - name: "Configure kernel modules"
-    copy:
-      dest: /etc/modprobe.d/lunaryorn-dotfiles.conf
-      content: |
-        # Blacklist pcspkr to silence beeps
-        blacklist pcspkr
-        # See https://wiki.archlinux.org/index.php/Power_management
-        options snd_hda_intel power_save=1
-        options snd_ac97_codec power_save=1
-        options iwlwifi power_save=1
-        # Prefer function keys over multimedia keys on Apple keyboards
-        options hid_apple fnmode=2
-        # Configure scrolling for Apple Magic Mouse
-        options hid_magicmouse scroll_acceleration=1 scroll_speed=40
   - name: "Configure kernel parameters"
     sysctl:
       name: "{{ item.key }}"
@@ -102,30 +41,6 @@
         #
         # 128 + 32 + 16
         kernel.sysrq: "176"
-        # The following settings are taken from an Ubuntu system; I guess they
-        # are reasonable to use.
-        #
-        # Many files and interfaces contain these addresses (e.g. /proc/kallsyms,
-        # /proc/modules, etc), and this setting can censor the addresses. A value
-        # of "0" allows all users to see the kernel addresses. A value of "1"
-        # limits visibility to the root user, and "2" blocks even the root user.
-        kernel.kptr_restrict: "1"
-        # IPv6 Privacy Extensions (RFC 4941)
-        # ---
-        # IPv6 typically uses a device's MAC address when choosing an IPv6 address
-        # to use in autoconfiguration. Privacy extensions allow using a randomly
-        # generated IPv6 address, which increases privacy.
-        #
-        # Acceptable values:
-        #    0 - don’t use privacy extensions.
-        #    1 - generate privacy addresses
-        #    2 - prefer privacy addresses and use them over the normal addresses.
-        net.ipv6.conf.all.use_tempaddr: "2"
-        net.ipv6.conf.default.use_tempaddr: "2"
-        # Turn on Source Address Verification in all interfaces to
-        # prevent some spoofing attacks.
-        net.ipv4.conf.default.rp_filter: "2"
-        net.ipv4.conf.all.rp_filter: "2"
 
   # Packages
   - name: Configure multilib repo
@@ -150,41 +65,26 @@
     pacman:
       state: present
       name:
-      - ansible
-      - lsb-release
       - fwupd
-      - sudo
       - ntfs-3g
       - exfat-utils
       - usbutils
+
       # Btrfs snapshots for backups and recovery
       - snapper
       - snap-pac
       # Additional pacman tools
-      - pacman-contrib
       - pkgfile
-      - reflector
       - aurpublish
       - namcap
-      # Help
-      - man-db
-      - man-pages
-      - tldr
-      # My Shell
-      - fish
-      - exa
-      - fd
-      - ripgrep
-      - bat
+    - oxipng
+
+
       - trash-cli
       # Tools
-      - neovim
-      - htop
       - powertop
       - iotop
       - rsync
-      - p7zip
-      - zip
       - mdcat
       - tree
       - nnn
@@ -192,18 +92,13 @@
       - oxipng
       # Networking
       - networkmanager
-      - net-tools
-      - bind-tools
-      - inetutils
       - avahi
       - nss-mdns
       # Package building
       - base-devel
       - devtools
       # Development
-      - git
       - httpie
-      - jq
       - meld
       - code
       - shellcheck
@@ -366,24 +261,12 @@
       enabled: true
       state: started
     loop:
-      # Periodically trim file systems
-      - fstrim.timer
       # WiFi and network management
       - NetworkManager
-      # Home directory & user management
-      - systemd-homed
-      # Basic NTP sync
-      - systemd-timesyncd
-      # Hostname resolution
-      - systemd-resolved
       # mDNS support
       - avahi-daemon.service
       # pkgfile updates
       - pkgfile-update.timer
-      # Pacman cache cleanup
-      - paccache.timer
-      # Mirrorlist updates
-      - reflector.timer
       # Printing
       - org.cups.cupsd.service
       # Bluetooth
@@ -404,11 +287,7 @@
       line: MulticastDNS=no
     notify:
       - Restart systemd-resolved
-  - name: Redirect resolv.conf to systemd-resolved
-    file:
-      src: /run/systemd/resolve/stub-resolv.conf
-      dest: /etc/resolv.conf
-      state: link
+
   - name: Create directory for dconf profiles
     file:
       path: /etc/dconf/profile
@@ -433,15 +312,6 @@
       - 10-sub-pixel-rgb
       # LCD filter, see https://wiki.archlinux.org/index.php/Font_configuration#LCD_filter
       - 11-lcdfilter-default
-  - name: Configure mirrorlist updates
-    copy:
-      dest: /etc/xdg/reflector/reflector.conf
-      content: |
-        --save /etc/pacman.d/mirrorlist
-        --protocol https
-        --country Germany
-        --latest 5
-        --sort age
 
   - name: Check btrfs subvolumes for better snapper support
     command:
@@ -523,16 +393,11 @@
       - git-delta
       - numix-circle-icon-theme-git
       - wcal-git
-      - etc-update
 
   handlers:
   - name: Restart systemd-resolved
     systemd:
       unit: systemd-resolved
-      state: restarted
-  - name: Restart systemd-timesyncd
-    systemd:
-      unit: systemd-timesyncd
       state: restarted
   - name: "mkinitcpio"
     command: mkinitcpio -p linux linux-lts

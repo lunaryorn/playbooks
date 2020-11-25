@@ -1,0 +1,167 @@
+- name: Configure static hosts
+  ansible.builtin.copy:
+    dest: /etc/hosts
+    mode: 644
+    owner: root
+    group: root
+    # See <https://wiki.archlinux.org/index.php/Installation_guide#Network_configuration>
+    content: |
+      # Managed by Ansible
+      127.0.0.1 localhost
+      ::1 localhost
+
+- name: Enable locales
+  community.general.locale_gen:
+    name: "{{ item }}"
+  loop:
+    - "de_DE.UTF-8"
+    - "en_GB.UTF-8"
+    - "en_US.UTF-8"
+
+- name: Install early boot packages
+  community.general.pacman:
+    state: present
+    name:
+    - base
+    - linux-firmware
+    - intel-ucode
+    - btrfs-progs
+    # Kernels
+    - linux
+    - linux-lts
+  notify:
+    - mkinitcpio
+
+- name: Install base packages
+  community.general.pacman:
+    state: present
+    name:
+    - lsb-release
+    - ansible
+    - sudo
+    # Archlinux & Pacman tools
+    - archlinux-contrib
+    - pacman-contrib
+    - reflector
+    # Manage EFI boot loaders
+    - efibootmgr
+    # Help
+    - man-db
+    - man-pages
+    - tldr
+    # Shell, editor & tools
+    - fish
+    - exa
+    - fd
+    - ripgrep
+    - bat
+    - nnn
+    - neovim
+    - htop
+    - iotop
+    - rsync
+    - tree
+    - bind
+    - p7zip
+    - zip
+    - git
+    - jq
+    - curl
+
+- name: "Configure kernel modules"
+  ansible.builtin.copy:
+    dest: /etc/modprobe.d/01-playbooks-arch-base.conf
+    content: |
+      # Managed by ansible
+
+      # Blacklist pcspkr to silence beeps
+      blacklist pcspkr
+
+      # See https://wiki.archlinux.org/index.php/Power_management
+      options snd_hda_intel power_save=1
+      options snd_ac97_codec power_save=1
+      options iwlwifi power_save=1
+
+      # Prefer function keys over multimedia keys on Apple keyboards
+      options hid_apple fnmode=2
+
+      # Configure scrolling for Apple Magic Mouse
+      options hid_magicmouse scroll_acceleration=1 scroll_speed=40
+  notify:
+    - mkinitcpio
+- name: "Configure kernel parameters"
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_file: /etc/sysctl.d/01-playbooks-arch-base.conf
+  loop: "{{ items | dict2items }}"
+  vars:
+    items:
+      # The following settings are taken from an Ubuntu system; I guess they
+      # are reasonable to use.
+      #
+      # Many files and interfaces contain these addresses (e.g. /proc/kallsyms,
+      # /proc/modules, etc), and this setting can censor the addresses. A value
+      # of "0" allows all users to see the kernel addresses. A value of "1"
+      # limits visibility to the root user, and "2" blocks even the root user.
+      kernel.kptr_restrict: "1"
+      # IPv6 Privacy Extensions (RFC 4941)
+      # ---
+      # IPv6 typically uses a device's MAC address when choosing an IPv6 address
+      # to use in autoconfiguration. Privacy extensions allow using a randomly
+      # generated IPv6 address, which increases privacy.
+      #
+      # Acceptable values:
+      #    0 - don’t use privacy extensions.
+      #    1 - generate privacy addresses
+      #    2 - prefer privacy addresses and use them over the normal addresses.
+      net.ipv6.conf.all.use_tempaddr: "2"
+      net.ipv6.conf.default.use_tempaddr: "2"
+      # Turn on Source Address Verification in all interfaces to
+      # prevent some spoofing attacks.
+      net.ipv4.conf.default.rp_filter: "2"
+      net.ipv4.conf.all.rp_filter: "2"
+
+- name: Periodically trim filesystems
+  ansible.builtin.systemd: unit=fstrim.timer enabled=true state=started
+
+- name: Enable NTP timesyncd
+  ansible.builtin.systemd: unit=systemd-timesyncd enabled=true state=started
+
+- name: Redirect resolv.conf to systemd-resolved
+  ansible.builtin.file:
+    src: /run/systemd/resolve/stub-resolv.conf
+    dest: /etc/resolv.conf
+    state: link
+- name: Enable resolved
+  ansible.builtin.systemd: unit=systemd-resolved enabled=true state=started
+
+- name: Create sudoers directory
+  ansible.builtin.file: path=/etc/sudoers.d state=directory mode=0700
+- name: Allow wheel group to become root
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/10-wheel
+    content: |
+      %wheel ALL=(ALL:ALL) ALL
+    mode: "0600"
+    validate: 'visudo -c %s'
+
+- name: Configure mirrorlist updates
+  ansible.builtin.copy:
+    dest: /etc/xdg/reflector/reflector.conf
+    content: |
+      --save /etc/pacman.d/mirrorlist
+      --protocol https
+      --country Germany
+      --latest 5
+      --sort age
+- name: Periodically update mirrorlist
+  ansible.builtin.systemd: unit=reflector.timer enabled=true state=started
+- name: Periodically clean pacman cache
+  ansible.builtin.systemd: unit=paccache.timer enabled=true state=started
+
+- name: Remove legacy files
+  ansible.builtin.file: path={{ item }} state=absent
+  loop:
+  - /etc/modprobe.d/lunaryorn-dotfiles.conf
+  - /etc/sysctl.d/lunaryorn-dotfiles.conf
