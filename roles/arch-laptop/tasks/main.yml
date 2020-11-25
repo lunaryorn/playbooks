@@ -9,7 +9,7 @@
       # Disable NMI watchdog (powertop rec.)
       kernel.nmi_watchdog: "0"
       # Increase writeback time (default 500, powertop rec.)
-      vm.dirty_writeback_entisecs: "1500"
+      vm.dirty_writeback_centisecs: "1500"
 
 - name: Install packages for laptops
   community.general.pacman:
