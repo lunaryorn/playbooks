@@ -1,0 +1,53 @@
+- name: Install development tools
+  community.general.pacman:
+    state: present
+    name:
+    # Development
+    # Diff & editor
+    - meld
+    - code
+    # Shell scripts
+    - shellcheck
+    - shfmt
+    # Forges
+    - hub
+    - github-cli
+    # Python
+    - ipython
+    - python-pylint
+    - autopep8
+    # Rust
+    - rustup
+    # Docs & websites
+    - hugo
+    - asciidoctor
+    # Misc
+    - hexyl
+    - oxipng
+    # REST
+    - httpie
+    # Virtual machines
+    - virt-manager
+- name: Optional dependencies of dev tools
+  community.general.pacman:
+    state: present
+    extra_args: --asdeps
+    name:
+    # virt-manager: NAT & KVM support
+    - dnsmasq
+    - ebtables
+    - qemu
+
+- name: Increase max file watchers for IDEA, Angular CLI, etc.
+  ansible.posix.sysctl:
+    name: fs.inotify.max_user_watches
+    value: "524288"
+    sysctl_file: /etc/sysctl.d/10-playbooks-arch-devel.conf
+
+- name: Install AUR packages
+  community.general.pacman:
+    state: present
+    name:
+    - git-gone
+    - git-delta
+  ignore_errors: true

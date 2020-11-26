@@ -70,6 +70,28 @@
     - zathura
     - zim
     - signal-desktop
+    - remmina
+    # Multimedia Apps
+    - pavucontrol
+    - paprefs
+    - gst-plugins-ugly
+    - gstreamer-vaapi
+    - vlc
+    - audacious
+    - youtube-dl
+    # Office
+    - libreoffice-fresh
+    - libreoffice-fresh-de
+    - hyphen-de
+    - hyphen-en
+    - hunspell-de
+    - hunspell-en_GB
+    - hunspell-en_US
+    - mythes-de
+    - mythes-en
+    # Graphics
+    - gimp
+    - inkscape
     # Fonts
     - noto-fonts
     - noto-fonts-extra
@@ -88,6 +110,8 @@
     - ttf-ubuntu-font-family
     - ttf-fira-mono
     - ttf-fira-sans
+    # Dependencies of my scripts
+    - python-keyring
 - name: Install optional dependencies
   community.general.pacman:
     state: present
@@ -98,6 +122,25 @@
       # zim: source code viewing and spell checking
       - gtksourceview3
       - gtkspell3
+      # libva: Intel chipsets
+      - intel-media-driver
+
+- name: Manage flatpak permissions
+  community.general.flatpak: name=com.github.tchx84.Flatseal state=present
+
+- name: Enable multicast DNS name resolution
+  ansible.builtin.lineinfile:
+    path: /etc/nsswitch.conf
+    regexp: "^hosts: "
+    line: "hosts: files mymachines myhostname mdns_minimal [NOTFOUND=return] resolve [!UNAVAIL=return] dns"
+- name: Do not use resolved for multicast DNS (we use Avahi for this)
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/resolved.conf
+    insertafter: "#MulticastDNS=yes"
+    regexp: "^MulticastDNS *="
+    line: MulticastDNS=no
+  notify:
+    - Restart systemd-resolved
 
 - name: Start desktop services
   ansible.builtin.systemd: unit={{ item }} enabled=true state=started
@@ -118,3 +161,12 @@
     - 10-sub-pixel-rgb
     # LCD filter, see https://wiki.archlinux.org/index.php/Font_configuration#LCD_filter
     - 11-lcdfilter-default
+
+- name: Install AUR packages
+  community.general.pacman:
+    state: present
+    name:
+    - otf-vollkorn
+    - ttf-fira-go
+    - numix-circle-icon-theme-git
+  ignore_errors: true

@@ -1,0 +1,28 @@
+- name: Install snapper for btrfs
+  community.general.pacman:
+    state: present
+    name:
+    - snapper
+    - snap-pac
+
+- name: Check btrfs subvolumes for better snapper support
+  command:
+    argv: [btrfs, subvolume, show, "{{ item }}"]
+  changed_when: False
+  loop:
+  - /srv
+  - /var/tmp
+  - /var/log
+  - /var/cache
+  - /var/cache/pacman/pkg
+  - /var/lib/flatpak/repo
+
+- name: Enable btrfs snapshots
+  ansible.builtin.systemd: unit={{ item }} enabled=true state=started
+  loop:
+    # Btrfs snapshots
+    - snapper-timeline.timer
+    - snapper-cleanup.timer
+
+
+

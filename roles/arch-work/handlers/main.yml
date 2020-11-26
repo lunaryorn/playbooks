@@ -1,0 +1,4 @@
+- name: Restart docker
+  ansible.builtin.systemd: unit=docker.service state=restarted
+- name: Restart timesyncd
+  ansible.builtin.systemd: unit=systemd-timesyncd.service state=restarted

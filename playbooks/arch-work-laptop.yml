@@ -14,3 +14,5 @@
     tags: [desktop, gnome]
   - role: arch-devel
     tags: [devel]
+  - role: arch-work
+    tags: [work]

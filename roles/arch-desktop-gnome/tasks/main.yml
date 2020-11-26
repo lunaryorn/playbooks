@@ -1,0 +1,52 @@
+- name: Install Gnome
+  community.general.pacman:
+    state: present
+    name:
+    - gdm
+    - gnome-shell
+    - gnome-shell-extensions
+    - gnome-tweaks
+    - gnome-calculator
+    - gnome-calendar
+    - gnome-characters
+    - gnome-clocks
+    - gnome-disk-utility
+    - gnome-font-viewer
+    - gnome-logs
+    - gnome-screenshot
+    - gnome-shell-extensions
+    - gnome-system-monitor
+    - gnome-weather
+    - gnome-terminal
+    - seahorse
+    - file-roller
+    - yelp
+    - cheese
+    - nautilus
+    - gvfs-afc
+    - gvfs-goa
+    - gvfs-google
+    - gvfs-gphoto2
+    - gvfs-mtp
+    - gvfs-nfs
+    - gvfs-smb
+    - sushi
+    - baobab
+    - evince
+    - eog
+    - chrome-gnome-shell
+    - simple-scan
+
+- name: Create directory for dconf profiles
+  ansible.builtin.file:
+    path: /etc/dconf/profile
+    state: directory
+    mode: "0755"
+- name: Define dconf profile for gdm
+  ansible.builtin.copy:
+    dest: /etc/dconf/profile/gdm
+    mode: "0644"
+    content: |
+      user-db:user
+      system-db:gdm
+      file-db:/usr/share/gdm/greeter-dconf-defaults

@@ -48,3 +48,9 @@
     - namcap
     # Tools for package building
     - devtools
+
+- name: Install AUR helper
+  community.general.pacman:
+    state: present
+    name: aurutils
+  ignore_errors: true

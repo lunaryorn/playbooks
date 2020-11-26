@@ -20,6 +20,8 @@
         - mediathekview
         - avidemux-qt
         - intellij-idea-community-edition
+        # Gtk Apps
+        - deja-dup
   - name: Enable and start services
     systemd:
       unit: "{{ item }}"

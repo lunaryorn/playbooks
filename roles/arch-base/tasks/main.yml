@@ -89,6 +89,7 @@
     - ansible
     - sudo
     - fwupd
+    - openssh
     # Archlinux & Pacman tools
     - archlinux-contrib
     - pacman-contrib
@@ -119,6 +120,8 @@
     - git
     - jq
     - curl
+    # Scripting
+    - python-systemd
 
 - name: "Configure kernel modules"
   ansible.builtin.copy:
@@ -219,3 +222,11 @@
   loop:
   - /etc/modprobe.d/lunaryorn-dotfiles.conf
   - /etc/sysctl.d/lunaryorn-dotfiles.conf
+
+- name: Install AUR packages
+  community.general.pacman:
+    state: present
+    name:
+    - xtermcontrol
+    - wcal-git
+  ignore_errors: true
