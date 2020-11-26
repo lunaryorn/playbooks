@@ -1,0 +1,44 @@
+- name: Install i3 and related packages
+  community.general.pacman:
+    state: present
+    name:
+    - i3-wm
+    - i3blocks
+    # Idle management and screen locker
+    - xss-lock
+    - xsecurelock
+    # Nightlight
+    - redshift
+    # Notifications
+    - dunst
+    # Launcher
+    - rofi
+    # Simple polkit agent
+    - gnome-polkit
+    # Set background
+    - feh
+    # Volume
+    - ponymix
+    # Window control
+    - wmctrl
+    # Input devices
+    - xorg-xinput
+    # Display management
+    - xorg-xrandr
+    - arandr
+    - autorandr
+
+- name: Install apps for i3
+  community.general.pacman:
+    state: present
+    name:
+    # Screenshots
+    - flameshot
+    # Devices
+    - udiskie
+    # Power manager
+    - xfce4-power-manager
+    # Image viewer
+    - nomacs
+    # Terminal
+    - kitty
