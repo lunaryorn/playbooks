@@ -1,0 +1,47 @@
+- name: Install systemd boot
+  ansible.builtin.command:
+    argv: [bootctl, --esp-path=/efi, --boot-path=/boot, install]
+    creates: /efi/EFI/BOOT/BOOTX64.EFI
+
+- name: Update boot loader
+  ansible.builtin.command:
+    argv: [bootctl, update]
+  changed_when: False
+
+- name: Configure boot loader entries
+  ansible.builtin.copy:
+    dest: /boot/loader/entries/{{ item.key }}.conf
+    content: |
+      title {{ item.value.title }}
+      linux /vmlinuz-{{ item.value.linux }}
+      initrd /intel-ucode.img
+      initrd /initramfs-{{ item.value.initramfs }}.img
+      options quiet
+  loop: "{{ items | dict2items }}"
+  vars:
+    items:
+      arch:
+        title: Arch
+        linux: linux
+        initramfs: linux
+      arch-fallback:
+        title: Arch (Fallback)
+        linux: linux
+        initramfs: linux-fallback
+      arch-lts:
+        title: Arch LTS
+        linux: linux-lts
+        initramfs: linux-lts
+      arch-lts-fallback:
+        title: Arch LTS (Fallback)
+        linux: linux-lts
+        initramfs: linux-lts-fallback
+
+- name: Configure boot loader (default kernel Arch)
+  ansible.builtin.copy:
+    dest: /efi/loader/loader.conf
+    content: |
+      timeout 0
+      editor no
+      console-mode keep
+      default arch.conf
