@@ -7,9 +7,12 @@
     argv: [btrfs, subvolume, show, /var/lib/postgres/data]
   changed_when: False
 
-- name: Install postgresql
-  community.general.pacman: name=postgresql state=present
-
+- name: Install postgresql and python library for Ansible
+  community.general.pacman:
+    state: present
+    name:
+    - postgresql
+    - python-psycopg2
 - name: Initialize postgresql database cluster
   ansible.builtin.command:
     argv:
@@ -28,8 +31,5 @@
     mode: "0600"
   notify:
     - Reload postgresql
-
 - name: Enable and start postgresql service
   ansible.builtin.systemd: unit=postgresql.service state=started enabled=true
-
-
