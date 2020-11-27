@@ -27,7 +27,7 @@
 
 - name: Configure local AUR repository
   ansible.builtin.copy:
-    dest: /etc/pacman.d/conf.d/80-aur-repo
+    dest: /etc/pacman.d/conf.d/80-aur-repo.conf
     mode: "0644"
     owner: root
     group: root
@@ -35,6 +35,12 @@
       [aur]
       SigLevel = Optional TrustAll
       Server = file:///srv/pkgrepo/aur
+  register: _aur_repo
+
+- name: Update pacman cache
+  community.general.pacman:
+    update_cache: true
+  when: _aur_repo is changed
 
 - name: Install packaging tools
   community.general.pacman:

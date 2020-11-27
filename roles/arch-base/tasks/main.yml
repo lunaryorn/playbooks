@@ -27,45 +27,22 @@
     owner: root
     group: root
     src: pacman.conf
+- name: Cleanup old pacman files
+  file:
+    path: /etc/pacmand./conf.d/{{item}}
+    state: absent
+  loop: [10-options, 50-core-repos, 60-multilib, 80-aur-repo]
 - name: Configure pacman options
   ansible.builtin.copy:
-    dest: /etc/pacman.d/conf.d/10-options
+    dest: /etc/pacman.d/conf.d/{{ item }}.conf
+    src: pacman.d/conf.d/{{ item }}.conf
     mode: "0644"
     owner: root
     group: root
-    content: |
-      # Colorized output and better download stats
-      Color
-      TotalDownload
-      VerbosePkgLists
-      CheckSpace
-      # Require signatures
-      SigLevel = Required DatabaseOptional
-      LocalFileSigLevel = Optional
-- name: Configure core pacman repositories
-  ansible.builtin.copy:
-    dest: /etc/pacman.d/conf.d/50-core-repos
-    mode: "0644"
-    owner: root
-    group: root
-    content: |
-      [core]
-      Include = /etc/pacman.d/mirrorlist
-
-      [extra]
-      Include = /etc/pacman.d/mirrorlist
-
-      [community]
-      Include = /etc/pacman.d/mirrorlist
-- name: Configure multilib repository
-  ansible.builtin.copy:
-    dest: /etc/pacman.d/conf.d/60-multilib
-    mode: "0644"
-    owner: root
-    group: root
-    content: |
-      [multilib]
-      Include = /etc/pacman.d/mirrorlist
+  loop:
+    - 00-global-options
+    - 10-signatures
+    - 50-core-repos
 
 - name: Install early boot packages
   community.general.pacman:

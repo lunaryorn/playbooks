@@ -1,3 +1,19 @@
+- name: Configure multilib repository
+  ansible.builtin.copy:
+    dest: /etc/pacman.d/conf.d/60-multilib.conf
+    mode: "0644"
+    owner: root
+    group: root
+    content: |
+      [multilib]
+      Include = /etc/pacman.d/mirrorlist
+  register: _multilib_repo
+
+- name: Update pacman cache
+  community.general.pacman:
+    update_cache: true
+  when: _multilib_repo is changed
+
 - name: Configure kernel parameters for desktop systems
   ansible.posix.sysctl:
     name: "{{ item.key }}"
