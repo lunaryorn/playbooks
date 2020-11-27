@@ -3,6 +3,10 @@
   roles:
   - role: arch-base
     tags: [base]
+  - role: arch-server
+    tags: [base]
+    vars:
+      root_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAZcS4wTHzzJPRoSabLQZf3+m039Aswoam6rRpVyFRil root"
   - role: arch-base-btrfs
     tags: [base]
   - role: arch-postgresql

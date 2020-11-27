@@ -1,0 +1,2 @@
+- name: Reload sshd
+  ansible.builtin.systemd: unit=sshd state=reloaded

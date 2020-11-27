@@ -1,0 +1,36 @@
+- name: Install ufw
+  community.general.pacman: name=ufw state=present
+- name: Enable and start ufw service
+  ansible.builtin.systemd: unit=ufw.service state=started enabled=true
+
+- name: Deny all traffic by default
+  community.general.ufw: default=deny
+- name: Allow SSH traffic rate-limited
+  community.general.ufw:
+    rule: limit
+    port: ssh
+    comment: Rate-limited SSH inbound
+# Keep after basic rules to keep SSH working
+- name: Enable ufw
+  community.general.ufw: state=enabled
+
+- name: Configure keys for root
+  ansible.posix.authorized_key:
+    user: root
+    key: "{{ root_key }}"
+    exclusive: yes
+
+- name: Install sshd
+  community.general.pacman: name=openssh state=present
+- name: Configure sshd
+  ansible.builtin.copy:
+    src: sshd_config
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload sshd
+- name: Enable and start sshd
+  ansible.builtin.systemd: unit=sshd.service state=started enabled=true
+
