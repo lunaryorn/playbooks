@@ -28,6 +28,9 @@
     - httpie
     # Virtual machines
     - virt-manager
+    # kubernetes & containers
+    - kubeadm
+    - kubectl
 - name: Optional dependencies of dev tools
   community.general.pacman:
     state: present
