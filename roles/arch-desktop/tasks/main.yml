@@ -128,12 +128,16 @@
 - name: Manage flatpak permissions
   community.general.flatpak: name=com.github.tchx84.Flatseal state=present
 
+- name: Enable network manager
+  ansible.builtin.systemd: unit=NetworkManager.service enabled=true state=started
+- name: Enable Avahi Daemon for mDNS
+  ansible.builtin.systemd: unit=avahi-daemon.service enabled=true state=started
 - name: Enable multicast DNS name resolution
   ansible.builtin.lineinfile:
     path: /etc/nsswitch.conf
     regexp: "^hosts: "
     line: "hosts: files mymachines myhostname mdns_minimal [NOTFOUND=return] resolve [!UNAVAIL=return] dns"
-- name: Do not use resolved for multicast DNS (we use Avahi for this)
+- name: Do not use resolved for multicast DNS, in favour of Avahi
   ansible.builtin.lineinfile:
     path: /etc/systemd/resolved.conf
     insertafter: "#MulticastDNS=yes"
@@ -142,13 +146,14 @@
   notify:
     - Restart systemd-resolved
 
-- name: Start desktop services
-  ansible.builtin.systemd: unit={{ item }} enabled=true state=started
-  loop:
-  - NetworkManager.service
-  - avahi-daemon.service
-  - bluetooth.service
-  - cups.socket
+- name: Enable bluetooth service
+  ansible.builtin.systemd: unit=bluetooth.service enabled=true state=started
+
+- name: Enable on-demand printing service
+  ansible.builtin.systemd: unit=cups.socket enabled=true state=started
+
+- name: Enable regular firmware update lookup
+  ansible.builtin.systemd: unit=fwupd-refresh.timer enabled=true state=started
 
 - name: Configure font settings
   ansible.builtin.file:
