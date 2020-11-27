@@ -1,0 +1,35 @@
+- name: Create postgres data subvolume
+  ansible.builtin.command:
+    argv: [btrfs, subvolume, create, /var/lib/postgres/data]
+    creates: /var/lib/postgres/data
+- name: Check whether postgres data is a subvolume
+  ansible.builtin.command:
+    argv: [btrfs, subvolume, show, /var/lib/postgres/data]
+  changed_when: False
+
+- name: Install postgresql
+  community.general.pacman: name=postgresql state=present
+
+- name: Initialize postgresql database cluster
+  ansible.builtin.command:
+    argv:
+      - initdb
+      - --locale=en_GB.UTF-8
+      - --encoding=UTF8
+      - --auth=peer
+      - --pgdata=/var/lib/postgres/data
+    creates: /var/lib/postgres/data/PG_VERSION
+- name: Configure authorization options
+  ansible.builtin.copy:
+    src: pg_hba.conf
+    dest: /var/lib/postgres/data/pg_hba.conf
+    owner: postgres
+    group: postgres
+    mode: "0600"
+  notify:
+    - Reload postgresql
+
+- name: Enable and start postgresql service
+  ansible.builtin.systemd: unit=postgresql.service state=started enabled=true
+
+

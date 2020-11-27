@@ -3,3 +3,7 @@
   roles:
   - role: arch-base
     tags: [base]
+  - role: arch-base-btrfs
+    tags: [base]
+  - role: arch-postgresql
+    tags: [postgres, postgresql, psql, miniflux]

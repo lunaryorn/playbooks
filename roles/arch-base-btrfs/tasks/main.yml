@@ -15,7 +15,6 @@
   - /var/log
   - /var/cache
   - /var/cache/pacman/pkg
-  - /var/lib/flatpak/repo
 
 - name: Enable btrfs snapshots
   ansible.builtin.systemd: unit={{ item }} enabled=true state=started
@@ -23,6 +22,3 @@
     # Btrfs snapshots
     - snapper-timeline.timer
     - snapper-cleanup.timer
-
-
-

@@ -1,0 +1,2 @@
+- name: Reload postgresql
+  ansible.builtin.systemd: unit=postgresql.service state=reloaded
