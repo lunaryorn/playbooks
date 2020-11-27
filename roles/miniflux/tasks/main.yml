@@ -1,0 +1,16 @@
+- import_tasks: database.yml
+  become: true
+  become_user: postgres
+
+- name: Create miniflux service
+  ansible.builtin.copy:
+    src: miniflux.service
+    dest: /etc/systemd/system/miniflux.service
+    mode: "0644"
+    owner: root
+    group: root
+
+# TODO: Install miniflux
+
+- name: Enable and start miniflux service
+  ansible.builtin.systemd: unit=miniflux.service enabled=true state=started

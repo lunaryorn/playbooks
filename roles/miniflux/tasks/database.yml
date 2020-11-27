@@ -1,0 +1,6 @@
+- name: Create miniflux user
+  community.general.postgresql_user: name=miniflux
+- name: Create miniflux database
+  community.general.postgresql_db: name=miniflux owner=miniflux
+- name: Add hstore extension to miniflux database
+  community.general.postgresql_ext: db=miniflux name=hstore

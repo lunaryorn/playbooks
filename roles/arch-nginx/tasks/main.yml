@@ -1,0 +1,77 @@
+- name: Install nginx and certbot
+  community.general.pacman:
+    state: present
+    name:
+    - nginx-mainline
+    - certbot
+
+- name: Allow HTTP and HTTPS traffic
+  community.general.ufw:
+    rule: allow
+    port: "{{item}}"
+    comment: HTTP/HTTPS for nginx
+  loop: [http, https]
+
+- name: Create nginx config dirs
+  ansible.builtin.file:
+    path: "/etc/nginx/{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop: [blocks.d, conf.d, sites-available, sites-enabled]
+
+- name: Install nginx site blocks
+  ansible.builtin.copy:
+    src: "{{item}}"
+    dest: /etc/nginx/blocks.d/
+    owner: root
+    group: root
+    mode: "0644"
+  with_fileglob: conf.d/*.conf
+  notify: [Reload nginx]
+- name: Install nginx sites
+  ansible.builtin.copy:
+    src: "{{item}}"
+    dest: /etc/nginx/sites-available/
+    owner: root
+    group: root
+    mode: "0644"
+  with_fileglob: sites-available/*.conf
+  notify: [Reload nginx]
+- name: Configure nginx
+  ansible.builtin.copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: [Reload nginx]
+
+- name: Enable nginx sites
+  ansible.builtin.file:
+    src: "../sites-available/{{ item }}.conf"
+    dest: "/etc/nginx/sites-enabled/{{ item }}.conf"
+    state: link
+  notify: [Reload nginx]
+  loop:
+  - arch.swsnr.de
+  - lunaryorn.com
+  - rss.swsnr.de
+  - swsnr.de
+  - www.lunaryorn.com
+  - www.swsnr.de
+
+- name: Create certbot service and timer
+  ansible.builtin.copy:
+    src: "{{item}}"
+    dest: /etc/systemd/system/
+    owner: root
+    group: root
+    mode: "0644"
+  with_fileglob: systemd/system/*
+  notify: [Restart certbot timer]
+
+- name: Enable and start nginx and certbot timer
+  ansible.builtin.systemd: unit={{item}} state=started enabled=true
+  loop: [nginx.service, certbot.timer]

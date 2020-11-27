@@ -1,0 +1,27 @@
+[Unit]
+Description=Miniflux Feed Reader
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=miniflux
+ExecStart=/usr/local/bin/miniflux
+Restart=always
+
+# See https://miniflux.app/docs/configuration.html
+Environment=RUN_MIGRATIONS=1 LISTEN_ADDR=127.0.0.1:8080 BASE_URL=https://rss.swsnr.de HTTPS=true
+# Connect via socket and peer ident
+Environment="DATABASE_URL=host=/var/run/postgresql user=miniflux dbname=miniflux sslmode=disable"
+
+# Hardening options:
+NoNewPrivileges=true
+PrivateDevices=true
+ProtectControlGroups=true
+ProtectHome=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectSystem=strict
+RestrictRealtime=true
+
+[Install]
+WantedBy=multi-user.target

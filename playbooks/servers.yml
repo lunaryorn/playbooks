@@ -11,3 +11,7 @@
     tags: [base]
   - role: arch-postgresql
     tags: [postgres, postgresql, psql, miniflux]
+  - role: miniflux
+    tags: [miniflux]
+  - role: arch-nginx
+    tags: [miniflux, nginx]

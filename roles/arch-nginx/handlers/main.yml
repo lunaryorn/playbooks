@@ -1,0 +1,4 @@
+- name: Reload nginx
+  ansible.builtin.systemd: unit=nginx.service state=reloaded
+- name: Restart certbot timer
+  ansible.builtin.systemd: unit=certbot.timer state=restarted
