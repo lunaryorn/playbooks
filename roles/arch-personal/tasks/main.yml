@@ -1,0 +1,50 @@
+- name: Install personal tools
+  community.general.pacman:
+    state: present
+    name:
+    # Backup
+    - deja-dup
+    # Finance
+    - gnucash
+    # Mails
+    - geary
+    # Photo library
+    - digikam
+    # Smartcard service for eID
+    - pcsclite
+    # Movie downloads and cutting
+    - mediathekview
+    - avidemux-qt
+    # Gaming
+    - steam
+    # IDEs
+    - intellij-idea-community-edition
+
+- name: Start smartcard service for eID
+  ansible.builtin.systemd: unit=pcscd.socket state=started enabled=true
+
+- name: Install Skype flatpak
+  community.general.flatpak: name=com.skype.Client state=present
+
+- name: Install AUR packages
+  pacman:
+    state: present
+    name:
+    - cozy-audiobooks
+    # PS remote gaming client
+    - chiaki
+    # eID card reader driver
+    - pcsc-cyberjack
+    # eID app
+    - ausweisapp2
+  ignore_errors: true
+
+- name: Configure NTP daemon
+  copy:
+    src: timesyncd.conf
+    dest: /etc/systemd/timesyncd.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+  - Restart systemd-timesyncd
