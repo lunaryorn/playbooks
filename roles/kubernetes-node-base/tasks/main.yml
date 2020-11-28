@@ -1,0 +1,46 @@
+- name: Disable password authentication in SSH
+  ansible.builtin.lineinfile:
+    state: present
+    path: /etc/ssh/sshd_config
+    line: PasswordAuthentication no
+    insertafter: '#PasswordAuthentication yes'
+    regexp: '^PasswordAuthentication '
+  notify:
+    - Reload SSHD
+
+- name: Setup repos for runtime and kubernetes
+  ansible.builtin.copy:
+    src: '{{item}}'
+    dest: /etc/yum.repos.d/
+    owner: root
+    group: root
+    mode: "0644"
+  with_fileglob: yum.repos.d/*.repo
+
+- name: Add EPL repository for UFW
+  ansible.builtin.dnf: name=epel-release state=present
+
+- name: Install ufw
+  ansible.builtin.dnf: name=ufw state=latest
+- name: Deny incoming traffic
+  community.general.ufw: default=deny
+- name: Allow SSH rate-limited
+  community.general.ufw:
+    rule: limit
+    port: ssh
+    comment: 'Rate limited SSH'
+- name: Enable UFW
+  community.general.ufw: state=enabled
+- name: Enable UFW service
+  ansible.builtin.systemd: unit=ufw.service state=started enabled=true
+
+- import_tasks: container-runtime/docker.yml
+
+# See https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#configure-cgroup-driver-used-by-kubelet-on-control-plane-node
+- name: Install kubernetes tools
+  ansible.builtin.dnf:
+    name: [kubelet, kubeadm, kubectl]
+    state: present
+    disable_excludes: kubernetes
+- name: Start kubelet
+  ansible.builtin.systemd: unit=kubelet.service state=started enabled=true

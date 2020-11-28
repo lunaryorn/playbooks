@@ -1,0 +1,4 @@
+- name: Reload SSHD
+  ansible.builtin.systemd: unit=sshd.service state=reloaded
+- name: Reload docker
+  ansible.builtin.systemd: unit=docker.service state=reloaded

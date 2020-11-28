@@ -15,3 +15,9 @@
     tags: [miniflux]
   - role: arch-nginx
     tags: [miniflux, nginx]
+
+- name: Kubernetes control plane node
+  hosts: kcp1.swsnr.de
+  roles:
+    - kubernetes-node-base
+    - kubernetes-control-plane
