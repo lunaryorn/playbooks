@@ -1,0 +1,30 @@
+- import_tasks: firewall.yml
+
+- name: Initialize cluster
+  ansible.builtin.command:
+    argv:
+    - kubeadm
+    - init
+    - --apiserver-advertise-address
+    - '{{cluster_network_host_ip}}'
+    - --pod-network-cidr
+    - 10.244.0.0/16
+    - --control-plane-endpoint
+    - k8s.swsnr.de
+    - --node-name
+    - kcp1.swsnr.de
+    - --log-file
+    - /root/kubeadm-init.log
+    creates: /var/lib/kubelet/config.yaml
+  notify:
+    - Install flannel
+    - Taint master
+
+- name: Create kube dir for root
+  ansible.builtin.file: path=/root/.kube state=directory mode="0700"
+- name: Give root cluster access
+  ansible.builtin.copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /root/.kube/config
+    mode: "0600"
+    remote_src: true

@@ -1,0 +1,6 @@
+- name: Install flannel
+  ansible.builtin.command:
+    argv: [kubectl, apply, -f, https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml]
+- name: Taint master nodes
+  ansible.builtin.command:
+    argv: [kubectl, taint, nodes, --all, node-role.kubernetes.io/master-]

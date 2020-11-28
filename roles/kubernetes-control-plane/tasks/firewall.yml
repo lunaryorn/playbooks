@@ -3,9 +3,15 @@
   community.general.ufw:
     port: "6443"
     rule: allow
-    comment: Kubernetes API server
+    interface: '{{cluster_network_iface}}'
+    direction: in
+    to: '{{cluster_network_host_ip}}'
+    comment: Kubernetes API server (cluster network)
 - name: Allow traffic to kubelet API
   community.general.ufw:
-    port: "10250"
     rule: allow
-    comment: Kubelet API
+    interface: '{{cluster_network_iface}}'
+    direction: in
+    to: '{{cluster_network_host_ip}}'
+    port: "10250"
+    comment: Kubelet API (cluster network)
