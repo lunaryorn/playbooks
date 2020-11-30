@@ -1,0 +1,20 @@
+- name: Create k0s directory
+  file:
+    path: /opt/k0s
+    state: directory
+    mode: "0755"
+
+- name: Download k0s
+  ansible.builtin.get_url:
+    url: https://github.com/k0sproject/k0s/releases/download/v0.7.0/k0s-v0.7.0-amd64
+    dest: /opt/k0s/k0s-v0.7.0-amd64
+    checksum: sha256:27547d7273757cceb0310672e934f171f9a1e3d8f46bb6e97e14d263bf80f011
+
+- name: Install k0s
+  copy:
+    src: /opt/k0s/k0s-v0.7.0-amd64
+    dest: /usr/local/bin/k0s
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0755"
