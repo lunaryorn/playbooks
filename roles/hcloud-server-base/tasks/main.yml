@@ -1,0 +1,25 @@
+- name: Disable password authentication in SSH
+  ansible.builtin.lineinfile:
+    state: present
+    path: /etc/ssh/sshd_config
+    line: PasswordAuthentication no
+    insertafter: '#PasswordAuthentication yes'
+    regexp: '^PasswordAuthentication '
+  notify:
+    - Reload SSHD
+
+- name: Install UFW
+  include_tasks: "ufw/{{ ansible_facts['distribution'] | lower }}.yml"
+
+- name: Deny incoming traffic
+  community.general.ufw: default=deny
+- name: Allow SSH rate-limited
+  community.general.ufw:
+    rule: limit
+    port: ssh
+    comment: 'Rate limited SSH'
+- name: Enable UFW
+  community.general.ufw: state=enabled
+
+- name: Enable UFW service
+  ansible.builtin.systemd: unit=ufw.service state=started enabled=true

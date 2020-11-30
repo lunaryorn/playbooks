@@ -1,0 +1,4 @@
+- name: Add EPL repository for UFW
+  ansible.builtin.dnf: name=epel-release state=present
+- name: Install ufw
+  ansible.builtin.dnf: name=ufw state=latest

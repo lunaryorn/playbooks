@@ -19,8 +19,7 @@
 - name: Kubernetes control plane node
   hosts: kcp1.swsnr.de
   roles:
-    - kubernetes-node-base
-    - kubernetes-control-plane
+    - hcloud-server-base
   vars:
     cluster_network_host_ip: 10.8.1.1
     cluster_network_iface: enp7s0
