@@ -18,7 +18,7 @@
     creates: /var/lib/kubelet/config.yaml
   notify:
     - Install flannel
-    - Taint master node
+    - Taint master nodes
 
 - name: Create kube dir for root
   ansible.builtin.file: path=/root/.kube state=directory mode="0700"
