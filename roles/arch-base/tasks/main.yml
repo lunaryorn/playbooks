@@ -85,6 +85,7 @@
     # A modern set of shell utilities
     - exa
     - fd
+    - sd
     - ripgrep
     - bat
     - mdcat
@@ -211,4 +212,5 @@
     name:
     - xtermcontrol
     - wcal-git
+    - dust
   ignore_errors: true
