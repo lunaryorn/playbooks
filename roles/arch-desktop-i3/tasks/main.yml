@@ -14,7 +14,7 @@
     # Launcher
     - rofi
     # Simple polkit agent
-    - gnome-polkit
+    - polkit-gnome
     # Set background
     - feh
     # Volume
@@ -23,6 +23,7 @@
     - wmctrl
     # Input devices
     - xorg-xinput
+    - xorg-xev
     # Display management
     - xorg-xrandr
     - arandr
