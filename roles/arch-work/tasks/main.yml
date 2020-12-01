@@ -1,1 +1,1 @@
-- import_tasks: secret.yml
+- include_tasks: secret.yml
