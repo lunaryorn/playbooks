@@ -78,25 +78,30 @@
     - man-db
     - man-pages
     - tldr
-    # Shell, editor & tools
+    # Git
+    - git
+    # Shell
     - fish
+    # A modern set of shell utilities
     - exa
     - fd
     - ripgrep
     - bat
     - mdcat
     - nnn
+    # Editor
     - neovim
+    # Monitoring & system tools
     - htop
     - iotop
-    - rsync
-    - tree
     - bind
+    # Data transfer
+    - rsync
+    - curl
+    # Data formats
     - p7zip
     - zip
-    - git
     - jq
-    - curl
     # Scripting
     - python-systemd
 
