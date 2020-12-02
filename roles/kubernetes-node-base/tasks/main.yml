@@ -20,7 +20,7 @@
   ansible.builtin.copy:
     dest: /etc/sysconfig/kubelet
     content: |
-      --node-ip={{cluster_network_host_ip}}
+      KUBELET_EXTRA_ARGS=--node-ip={{cluster_network_host_ip}}
   notify: [Restart kubelet]
 
 - name: Start kubelet
