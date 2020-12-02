@@ -1,2 +1,4 @@
 - name: Reload docker
   ansible.builtin.systemd: unit=docker.service state=reloaded
+- name: Restart kubelet
+  ansible.builtin.systemd: unit=kubelet.service state=restarted

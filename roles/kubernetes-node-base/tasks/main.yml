@@ -15,5 +15,13 @@
     name: [kubelet, kubeadm, kubectl]
     state: present
     disable_excludes: kubernetes
+
+- name: Configure node IP
+  ansible.builtin.copy:
+    dest: /etc/sysconfig/kubelet
+    content: |
+      --node-ip={{cluster_network_host_ip}}
+  notify: [Restart kubelet]
+
 - name: Start kubelet
   ansible.builtin.systemd: unit=kubelet.service state=started enabled=true
