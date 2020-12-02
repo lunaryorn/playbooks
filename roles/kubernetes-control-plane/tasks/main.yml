@@ -6,7 +6,9 @@
     - kubeadm
     - init
     - --apiserver-advertise-address
-    - '{{cluster_network_host_ip}}'
+    - "{{cluster_network_host_ip}}"
+    - --apiserver-cert-extra-sans
+    - "{{cluster_network_host_ip}},k8s.swsnr.de"
     - --pod-network-cidr
     - 10.244.0.0/16
     - --control-plane-endpoint
