@@ -37,11 +37,11 @@
         linux: linux-lts
         initramfs: linux-lts-fallback
 
-- name: Configure boot loader (default kernel Arch)
+- name: Configure boot loader (default kernel Arch LTS)
   ansible.builtin.copy:
     dest: /efi/loader/loader.conf
     content: |
       timeout 0
       editor no
       console-mode keep
-      default arch.conf
+      default arch-lts.conf
