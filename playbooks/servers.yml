@@ -19,7 +19,8 @@
 - name: Kubernetes control plane node
   hosts: kcp1.swsnr.de
   roles:
-    - hcloud-server-base
+    - name: hcloud-server-base
+      tags: [base]
     - kubernetes-node-base
     - kubernetes-control-plane
   vars:
