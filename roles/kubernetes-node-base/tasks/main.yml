@@ -16,12 +16,12 @@
     state: present
     disable_excludes: kubernetes
 
-- name: Configure node IP
-  ansible.builtin.copy:
-    dest: /etc/sysconfig/kubelet
-    content: |
-      KUBELET_EXTRA_ARGS=--node-ip={{cluster_network_host_ip}}
-  notify: [Restart kubelet]
-
 - name: Start kubelet
   ansible.builtin.systemd: unit=kubelet.service state=started enabled=true
+
+- name: Enable HTTP and HTTPS traffic to node
+  community.general.ufw:
+    port: '{{item}}'
+    rule: allow
+    comment: '{{item}} traffic to node'
+  loop: [http, https]
