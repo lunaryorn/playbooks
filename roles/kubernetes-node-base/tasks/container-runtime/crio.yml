@@ -2,6 +2,12 @@
 - name: Load modules for cri-o
   community.general.modprobe: name={{item}} state=present
   loop: [overlay, br_netfilter]
+- name: Permanently load crio modules
+  ansible.builtin.copy:
+    dest: /etc/modules-load.d/cri-o.conf
+    content: |
+      overlay
+      br_netfilter
 - name: Configure kernel parameters for cri-o
   ansible.posix.sysctl:
     name: '{{item.key}}'

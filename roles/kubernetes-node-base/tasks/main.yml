@@ -7,7 +7,7 @@
     mode: "0644"
   with_fileglob: yum.repos.d/*.repo
 
-- import_tasks: container-runtime/docker.yml
+- import_tasks: container-runtime/crio.yml
 
 # See https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#configure-cgroup-driver-used-by-kubelet-on-control-plane-node
 - name: Install kubernetes tools
