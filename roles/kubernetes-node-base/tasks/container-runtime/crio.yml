@@ -28,3 +28,12 @@
     unit: crio.service
     enabled: true
     state: started
+
+# See https://github.com/cri-o/cri-o/issues/2411
+- name: Remove conflicting network configuration
+  ansible.builtin.file:
+    path: "/etc/cni/net.d/{{item}}"
+    state: absent
+  loop:
+  - 100-crio-bridge.conf
+  - 200-loopback.conf
