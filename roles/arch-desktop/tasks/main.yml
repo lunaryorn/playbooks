@@ -162,6 +162,9 @@
   notify:
     - Restart systemd-resolved
 
+- name: Enable home service
+  ansible.builtin.systemd: unit=systemd-homed.service enabled=true state=started
+
 - name: Enable bluetooth service
   ansible.builtin.systemd: unit=bluetooth.service enabled=true state=started
 
