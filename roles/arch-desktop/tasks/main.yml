@@ -162,6 +162,13 @@
   notify:
     - Restart systemd-resolved
 
+# See <https://wiki.archlinux.org/index.php/Systemd-homed#polkit_does_not_detect_groups_of_systemd-homed_users>
+# and <https://bugs.archlinux.org/task/67658>
+- name: Fix group discovery with homed
+  ansible.builtin.lineinfile:
+    path: /etc/nsswitch.conf
+    regexp: "^group: "
+    line: "group: files [SUCCESS=merge] systemd"
 - name: Enable home service
   ansible.builtin.systemd: unit=systemd-homed.service enabled=true state=started
 
