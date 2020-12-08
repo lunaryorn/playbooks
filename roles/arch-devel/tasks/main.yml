@@ -29,6 +29,7 @@
     # Virtual machines
     - virt-manager
     # kubernetes & containers
+    - podman
     - kubeadm
     - kubectl
     - helm
