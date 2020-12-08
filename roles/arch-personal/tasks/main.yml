@@ -2,6 +2,8 @@
   community.general.pacman:
     state: present
     name:
+    # hetzner cloud CLI for my servers
+    - hcloud
     # Backup
     - deja-dup
     # Finance
