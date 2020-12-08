@@ -60,3 +60,17 @@
     state: present
     name: aurutils
   ignore_errors: true
+
+- ansible.builtin.file:
+    path: /etc/aurutils
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+- name: Configure pacman for chroot building with aurutils
+  ansible.builtin.copy:
+    dest: /etc/aurutils/pacman-aur.conf
+    src: pacman-aur.conf
+    owner: root
+    group: root
+    mode: "0644"
