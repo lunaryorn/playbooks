@@ -99,6 +99,7 @@
     - mdcat
     - nnn
     # Editor
+    - code
     - neovim
     # Monitoring & system tools
     - htop
