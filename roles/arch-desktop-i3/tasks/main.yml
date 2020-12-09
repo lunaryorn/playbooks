@@ -37,6 +37,8 @@
     - flameshot
     # Devices
     - udiskie
+    # Networks
+    - network-manager-applet
     # Power manager
     - xfce4-power-manager
     # Image viewer
