@@ -1,0 +1,20 @@
+- name: Allow incoming http/https traffic
+  community.general.ufw:
+    rule: limit
+    port: '{{item}}'
+    comment: Incoming webserver traffic
+  loop: [http, https]
+
+- name: Add caddy repo
+  ansible.builtin.command:
+    argv: [dnf, copr, enable, -y, '@caddy/caddy']
+    # Please, ansible :|
+    warn: false
+    creates: /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:group_caddy:caddy.repo
+
+- name: Install caddy
+  ansible.builtin.dnf: name=caddy state=present
+- name: Start caddy
+  ansible.builtin.systemd: unit=caddy.service enabled=true state=started
+# TODO: Enable caddy
+# TODO configure caddy

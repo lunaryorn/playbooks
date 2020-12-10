@@ -1,28 +1,5 @@
-- name: Archlinux server
+- name: Webserver
   hosts: swsnr.de
   roles:
-  - role: arch-base
-    tags: [base]
-  - role: arch-server
-    tags: [base]
-    vars:
-      root_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAZcS4wTHzzJPRoSabLQZf3+m039Aswoam6rRpVyFRil root"
-  - role: arch-base-btrfs
-    tags: [base]
-  - role: arch-postgresql
-    tags: [postgres, postgresql, psql, miniflux]
-  - role: miniflux
-    tags: [miniflux]
-  - role: arch-nginx
-    tags: [miniflux, nginx]
-
-- name: Kubernetes control plane node
-  hosts: kcp1.swsnr.de
-  roles:
     - name: hcloud-server-base
-      tags: [base]
-    - kubernetes-node-base
-    - kubernetes-control-plane
-  vars:
-    k0s_server: true
-    cluster_network_host_ip: 10.8.1.1
+    - name: hcloud-caddy2
