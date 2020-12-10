@@ -20,8 +20,7 @@
     - ruby-bundler
     # Rust
     - rustup
-    # Docs & websites
-    - hugo
+    # Manpages & docs
     - asciidoctor
     # Misc
     - hexyl
@@ -30,11 +29,8 @@
     - httpie
     # Virtual machines
     - virt-manager
-    # kubernetes & containers
+    # Containers
     - podman
-    - kubeadm
-    - kubectl
-    - helm
 - name: Optional dependencies of dev tools
   community.general.pacman:
     state: present
@@ -44,6 +40,15 @@
     - dnsmasq
     - ebtables
     - qemu
+- name: Remove unused packages
+  community.general.pacman:
+    state: absent
+    extra_args: --recursive
+    name:
+    - hugo
+    - kubeadm
+    - kubectl
+    - helm
 
 - name: Increase max file watchers for IDEA, Angular CLI, etc.
   ansible.posix.sysctl:
