@@ -17,6 +17,7 @@
     - gnome-shell-extensions
     - gnome-system-monitor
     - gnome-weather
+    - gnome-maps
     - gnome-terminal
     - seahorse
     - file-roller
