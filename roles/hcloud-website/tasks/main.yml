@@ -1,0 +1,40 @@
+- name: Create /srv/http
+  ansible.builtin.file:
+    path: /srv/http
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create transfer group for website
+  ansible.builtin.group:
+    name: website
+    state: present
+- name: Create transfer user for website
+  ansible.builtin.user:
+    name: website
+    group: website
+    password_lock: true
+- name: Register deploy key
+  ansible.posix.authorized_key:
+    comment: website deployment
+    key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdsMybfcof27TBl8qDKof+ugcKecoP3n2mggwPExGtc
+    user: website
+    key_options: 'command=internal-sftp'
+
+- name: Create /srv/http/swsnr.de
+  ansible.builtin.file:
+    path: /srv/http/swsnr.de
+    state: directory
+    owner: website
+    group: website
+    mode: '0755'
+
+- name: Configure Caddy
+  ansible.builtin.copy:
+    src: Caddyfile
+    dest: /etc/caddy/Caddyfile
+    owner: root
+    group: root
+    mode: '0644'
+  notify: [Reload caddy]

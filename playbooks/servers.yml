@@ -3,3 +3,4 @@
   roles:
     - name: hcloud-server-base
     - name: hcloud-caddy2
+    - name: hcloud-website
