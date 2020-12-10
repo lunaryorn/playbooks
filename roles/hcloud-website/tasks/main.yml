@@ -16,6 +16,8 @@
     group: website
     password_lock: true
 
+- name: Install perl for rrsync
+  ansible.builtin.dnf: name=perl state=present
 - name: Copy rrsync script
   ansible.builtin.copy:
     src: /usr/share/doc/rsync/support/rrsync
