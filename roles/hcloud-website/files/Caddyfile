@@ -3,7 +3,7 @@
 }
 
 swsnr.de {
-    root /srv/http/website/swsnr.de
+    root * /srv/http/website/swsnr.de
     file_server
 
     handle_errors {
