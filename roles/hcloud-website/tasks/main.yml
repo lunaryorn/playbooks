@@ -15,12 +15,22 @@
     name: website
     group: website
     password_lock: true
+
+- name: Copy rrsync script
+  ansible.builtin.copy:
+    src: /usr/share/doc/rsync/support/rrsync
+    remote_src: true
+    dest: /usr/local/bin/rrsync
+    owner: root
+    group: root
+    mode: '0755'
+
 - name: Register deploy key
   ansible.posix.authorized_key:
     comment: website deployment
     key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdsMybfcof27TBl8qDKof+ugcKecoP3n2mggwPExGtc
     user: website
-    key_options: 'command=internal-sftp'
+    key_options: 'command="/usr/local/bin/rrsync /srv/http/swsnr.de",no-agent-forwarding,no-port-forwarding,no-pty,no-user-rc,no-X11-forwarding'
 
 - name: Create /srv/http/swsnr.de
   ansible.builtin.file:
