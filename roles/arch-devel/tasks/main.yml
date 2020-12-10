@@ -16,6 +16,8 @@
     - ipython
     - python-pylint
     - autopep8
+    # Ruby (mostly for Jekyll)
+    - ruby-bundler
     # Rust
     - rustup
     # Docs & websites
