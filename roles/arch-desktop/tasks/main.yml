@@ -201,4 +201,6 @@
     - otf-vollkorn
     - ttf-fira-go
     - numix-circle-icon-theme-git
+    # RSS reader
+    - newsflash
   ignore_errors: true
