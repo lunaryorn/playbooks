@@ -193,6 +193,13 @@
     mode: "0600"
     validate: 'visudo -c %s'
 
+- name: Lock accounts only after five attempts (the default three is too aggressive)
+  ansible.builtin.lineinfile:
+    path: /etc/security/faillock.conf
+    insertafter: '^# *deny *='
+    regexp: "^deny *="
+    line: "deny = 5"
+
 - name: Configure mirrorlist updates
   ansible.builtin.copy:
     dest: /etc/xdg/reflector/reflector.conf
