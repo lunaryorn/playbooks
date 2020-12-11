@@ -1,3 +1,8 @@
+- name: Check static hostname
+  ansible.builtin.assert:
+    that: ansible_facts['hostname'] != ''
+    fail_msg: Please configure the static hostname in /etc/hostname
+
 - name: Configure static hosts
   ansible.builtin.copy:
     dest: /etc/hosts
@@ -9,6 +14,7 @@
       # Managed by Ansible
       127.0.0.1 localhost
       ::1 localhost
+      127.0.1.1  {{ansible_facts['hostname']}}.localdomain {{ansible_facts['hostname']}}
 
 - name: Enable locales
   community.general.locale_gen:
