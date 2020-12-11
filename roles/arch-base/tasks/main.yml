@@ -209,12 +209,6 @@
 - name: Periodically update pacman file database
   ansible.builtin.systemd: unit=pkgfile-update.timer enabled=true state=started
 
-- name: Remove legacy files
-  ansible.builtin.file: path={{ item }} state=absent
-  loop:
-  - /etc/modprobe.d/lunaryorn-dotfiles.conf
-  - /etc/sysctl.d/lunaryorn-dotfiles.conf
-
 - name: Install AUR packages
   community.general.pacman:
     state: present
