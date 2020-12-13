@@ -134,6 +134,8 @@
     state: present
     extra_args: --asdeps
     name:
+      # qt5: wayland support
+      - qt5-wayland
       # zathura: PDF support
       - zathura-pdf-mupdf
       # zim: source code viewing and spell checking
