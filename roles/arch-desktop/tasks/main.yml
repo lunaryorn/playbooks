@@ -70,6 +70,7 @@
     - nss-mdns
     # Desktop services
     - cups
+    - system-config-printer
     - hplip
     - bluez
     - sane
