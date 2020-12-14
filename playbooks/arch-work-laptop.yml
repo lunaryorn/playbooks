@@ -14,8 +14,6 @@
     tags: [desktop]
   - role: arch-desktop-gnome
     tags: [desktop, gnome]
-  - role: arch-desktop-i3
-    tags: [desktop, i3]
   - role: arch-devel
     tags: [devel]
   - role: arch-work
