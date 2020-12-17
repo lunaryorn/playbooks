@@ -69,6 +69,9 @@
     # Kernels
     - linux
     - linux-lts
+    # and headers for DKMS
+    - linux-headers
+    - linux-lts-headers
   notify:
     - mkinitcpio
 
