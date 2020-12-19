@@ -51,3 +51,10 @@
       user-db:user
       system-db:gdm
       file-db:/usr/share/gdm/greeter-dconf-defaults
+
+- name: Install AUR packages
+  community.general.pacman:
+    state: present
+    name:
+    - gnome-shell-extension-pop-shell
+  ignore_errors: true
