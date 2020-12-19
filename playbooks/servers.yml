@@ -6,11 +6,7 @@
     - name: hcloud-website
 - name: Kubernetes nodes
   hosts: [kcp1.swsnr.de]
-  roles: [hcloud-server-base, k0s-base]
-- name: Kubernetes control plane
-  hosts: [kcp1.swsnr.de]
-  roles: [k0s-server]
-  tasks:
+  roles: [hcloud-server-base]
 - name: Kubernetes ingress node
   hosts: [kcp1.swsnr.de]
   tasks:
