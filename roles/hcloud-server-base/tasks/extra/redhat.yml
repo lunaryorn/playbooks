@@ -1,0 +1,4 @@
+- name: Install copr support
+  ansible.builtin.dnf:
+    name: 'dnf-command(copr)'
+    state: present

@@ -24,7 +24,4 @@
 - name: Enable UFW service
   ansible.builtin.systemd: unit=ufw.service state=started enabled=true
 
-- name: Install copr support
-  ansible.builtin.dnf:
-    name: 'dnf-command(copr)'
-    state: present
+- include_tasks: "extra/{{ ansible_facts['distribution'] | lower }}.yml"
