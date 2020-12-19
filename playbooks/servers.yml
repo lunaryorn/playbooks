@@ -4,3 +4,19 @@
     - name: hcloud-server-base
     - name: hcloud-caddy2
     - name: hcloud-website
+- name: Kubernetes nodes
+  hosts: [kcp1.swsnr.de]
+  roles: [hcloud-server-base, k0s-base]
+- name: Kubernetes control plane
+  hosts: [kcp1.swsnr.de]
+  roles: [k0s-server]
+  tasks:
+- name: Kubernetes ingress node
+  hosts: [kcp1.swsnr.de]
+  tasks:
+  - name: Open HTTP/HTTPS ports
+    community.general.ufw:
+      port: '{{item}}'
+      rule: allow
+      comment: HTTP traffic to this k0s node
+    loop: [http, https]
