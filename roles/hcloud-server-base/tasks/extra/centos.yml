@@ -1,1 +1,2 @@
-- import_tasks: redhat.yml
+- name: Include generic redhat system tasks
+  include_tasks: redhat.yml

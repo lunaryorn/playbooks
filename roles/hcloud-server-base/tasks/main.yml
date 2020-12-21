@@ -24,4 +24,5 @@
 - name: Enable UFW service
   ansible.builtin.systemd: unit=ufw.service state=started enabled=true
 
-- include_tasks: "extra/{{ ansible_facts['distribution'] | lower }}.yml"
+- name: Include extra tasks
+  include_tasks: "extra/{{ ansible_facts['distribution'] | lower }}.yml"
