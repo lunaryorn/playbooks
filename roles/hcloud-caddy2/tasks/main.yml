@@ -12,6 +12,22 @@
     warn: false
     creates: /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:group_caddy:caddy.repo
 
+- name: Configure Caddy
+  ansible.builtin.copy:
+    src: Caddyfile
+    dest: /etc/caddy/Caddyfile
+    owner: root
+    group: root
+    mode: "0644"
+  notify: [Reload caddy]
+- name: Create directory for Caddy sites
+  ansible.builtin.file:
+    path: /etc/caddy/sites-enabled/
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
 - name: Install caddy
   ansible.builtin.dnf: name=caddy state=present
 - name: Start caddy

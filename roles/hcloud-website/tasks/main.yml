@@ -45,8 +45,8 @@
 - name: Configure Caddy
   ansible.builtin.copy:
     src: Caddyfile
-    dest: /etc/caddy/Caddyfile
+    dest: /etc/caddy/sites-enabled/10-swsnr.de
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   notify: [Reload caddy]
