@@ -1,0 +1,39 @@
+- name: Install sway packages
+  community.general.pacman:
+    state: present
+    name:
+    - sway
+    - alacritty
+    # Tools
+    - network-manager-applet
+
+- name: Install optional sway dependencies
+  community.general.pacman:
+    state: present
+    extra_args: --asdeps
+    name:
+    # Tools of the default config
+    - dmenu
+    - i3status
+    # Notifications
+    - mako
+    # Idle management and screen locking
+    - swayidle
+    - swaylock
+    # X11 fallback
+    - xorg-server-xwayland
+
+- name: Install sway session binary
+  ansible.builtin.copy:
+    src: sway-session
+    dest: /usr/local/bin/sway-session
+    owner: root
+    group: root
+    mode: "0755"
+- name: Register sway session
+  ansible.builtin.copy:
+    src: sway-session.desktop
+    dest: /usr/share/wayland-sessions/sway-session.desktop
+    owner: root
+    group: root
+    mode: "0644"

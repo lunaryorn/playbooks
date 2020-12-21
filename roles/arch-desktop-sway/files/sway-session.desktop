@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Sway session
+Comment=This session logs you into Sway properly
+Exec=/usr/local/bin/sway-session
+TryExec=/usr/local/bin/sway-session
+Type=Application
+DesktopNames=sway
