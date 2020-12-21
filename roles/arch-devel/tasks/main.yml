@@ -29,6 +29,9 @@
     - httpie
     # Containers
     - podman
+    # kubernetes
+    - kubectl
+    - helm
 - name: Remove unused packages
   community.general.pacman:
     state: absent
@@ -36,8 +39,6 @@
     name:
     - hugo
     - kubeadm
-    - kubectl
-    - helm
     - virt-manager
 
 - name: Increase max file watchers for IDEA, Angular CLI, etc.
