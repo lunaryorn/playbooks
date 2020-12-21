@@ -193,7 +193,7 @@
   ansible.builtin.systemd: unit=systemd-resolved enabled=true state=started
 
 - name: Create sudoers directory
-  ansible.builtin.file: path=/etc/sudoers.d state=directory mode=0700
+  ansible.builtin.file: path=/etc/sudoers.d state=directory mode=0750
 - name: Allow wheel group to become root
   ansible.builtin.copy:
     dest: /etc/sudoers.d/10-wheel
