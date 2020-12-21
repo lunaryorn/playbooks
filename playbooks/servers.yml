@@ -4,6 +4,7 @@
     - name: hcloud-server-base
     - name: hcloud-caddy2
     - name: hcloud-website
+    - name: hcloud-postgresql
 - name: Kubernetes nodes
   hosts: [kcp1.swsnr.de]
   roles: [hcloud-server-base]

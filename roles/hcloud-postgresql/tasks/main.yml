@@ -1,0 +1,12 @@
+- name: Install postgresql server
+  ansible.builtin.dnf:
+    name:
+    - postgresql-server
+    - postgresql-contrib
+    state: present
+- name: Initialize postgres cluster
+  ansible.builtin.command:
+    argv: [postgresql-setup, --initdb]
+    creates: /var/lib/pgsql/data/PG_VERSION
+- name: Enable postgresql
+  ansible.builtin.systemd: unit=postgresql.service state=started enabled=true
