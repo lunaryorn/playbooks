@@ -27,7 +27,7 @@
   ansible.builtin.copy:
     dest: /etc/locale.conf
     content: |
-      LANG=de_DE.UTF8
+      LANG=de_DE.UTF-8
     mode: "0644"
     owner: root
     group: root
