@@ -44,4 +44,4 @@
       timeout 0
       editor no
       console-mode keep
-      default arch-lts.conf
+      default arch.conf
