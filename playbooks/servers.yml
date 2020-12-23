@@ -48,7 +48,7 @@
       comment: website deployment
       key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdsMybfcof27TBl8qDKof+ugcKecoP3n2mggwPExGtc
       user: website
-      key_options: 'command="/usr/local/bin/rrsync /srv/http/swsnr.de",no-agent-forwarding,no-port-forwarding,no-pty,no-user-rc,no-X11-forwarding'
+      key_options: 'command="/usr/bin/rrsync /srv/http/swsnr.de",no-agent-forwarding,no-port-forwarding,no-pty,no-user-rc,no-X11-forwarding'
   - name: Create /srv/http/swsnr.de
     ansible.builtin.file:
       path: /srv/http/swsnr.de
