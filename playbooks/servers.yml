@@ -7,7 +7,10 @@
     - name: hcloud-postgresql
 - name: Kubernetes nodes
   hosts: [kcp1.swsnr.de]
-  roles: [hcloud-server-base]
+  roles:
+  - hcloud-server-base
+  - hcloud-k3s-base
+  - hcloud-k3s-server
 - name: Kubernetes ingress node
   hosts: [kcp1.swsnr.de]
   tasks:
