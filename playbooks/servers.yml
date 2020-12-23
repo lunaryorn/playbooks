@@ -10,6 +10,9 @@
   roles:
   - hcloud-server-base
   - hcloud-k3s-base
+- name: Kubernetes control plane nodes
+  hosts: [kcp1.swsnr.de]
+  roles:
   - hcloud-k3s-server
 - name: Kubernetes ingress node
   hosts: [kcp1.swsnr.de]
