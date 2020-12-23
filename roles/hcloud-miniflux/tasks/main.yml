@@ -1,0 +1,38 @@
+- name: Add miniflux repository
+  ansible.builtin.copy:
+    src: miniflux.repo
+    dest: /etc/yum.repos.d/miniflux.repo
+    owner: root
+    group: root
+    mode: "0644"
+- name: Install miniflux
+  ansible.builtin.dnf: name=miniflux state=present
+- name: Configure miniflux
+  ansible.builtin.copy:
+    src: miniflux.conf
+    dest: /etc/miniflux.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: [Restart miniflux]
+
+- name: Create miniflux user
+  community.general.postgresql_user:
+  name: miniflux
+  become: yes
+  become_user: postgres
+- name: Create miniflux database
+  community.general.postgresql_db:
+  name: miniflux
+  owner: miniflux
+  become: yes
+  become_user: postgres
+- name: Enable hstore extension for miniflux
+  community.general.postgresql_db:
+  name: miniflux
+  owner: miniflux
+  become: yes
+  become_user: postgres
+
+- name: Enable and start miniflux
+  ansible.builtin.systemd: unit=miniflux.service enabled=yes state=started

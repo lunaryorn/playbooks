@@ -1,0 +1,5 @@
+[miniflux]
+name=Miniflux Repository
+baseurl=https://rpm.miniflux.app/x86_64/
+enabled=1
+gpgcheck=0
