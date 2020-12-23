@@ -18,5 +18,5 @@
     community.general.ufw:
       port: '{{item}}'
       rule: allow
-      comment: HTTP traffic to this k0s node
+      comment: HTTP traffic to this k3s node
     loop: [http, https]
