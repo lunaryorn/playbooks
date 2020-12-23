@@ -1,2 +1,0 @@
-- name: Restart kubelet
-  ansible.builtin.systemd: unit=kubelet.service state=restarted
