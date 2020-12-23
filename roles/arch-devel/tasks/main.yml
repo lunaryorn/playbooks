@@ -32,6 +32,8 @@
     # kubernetes
     - kubectl
     - helm
+    # Databases
+    - postgresql-libs # psql & other postgres clients
 - name: Remove unused packages
   community.general.pacman:
     state: absent
