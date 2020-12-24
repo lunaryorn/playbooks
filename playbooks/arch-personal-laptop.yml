@@ -12,8 +12,6 @@
     tags: [base]
   - role: arch-desktop
     tags: [desktop]
-  - role: arch-desktop-sway
-    tags: [desktop, sway]
   - role: arch-desktop-gnome
     tags: [desktop, gnome]
   - role: arch-personal
