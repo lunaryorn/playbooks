@@ -68,6 +68,7 @@
     - networkmanager
     - avahi
     - nss-mdns
+    - firewalld
     # Desktop services
     - cups
     - system-config-printer
@@ -152,6 +153,8 @@
   ansible.builtin.systemd: unit=NetworkManager.service enabled=true state=started
 - name: Enable Avahi Daemon for mDNS
   ansible.builtin.systemd: unit=avahi-daemon.service enabled=true state=started
+- name: Enable firewall daemon
+  ansible.builtin.systemd: unit=firewalld.service enabled=true state=started
 - name: Enable multicast DNS name resolution
   ansible.builtin.lineinfile:
     path: /etc/nsswitch.conf
@@ -178,10 +181,8 @@
 
 - name: Enable bluetooth service
   ansible.builtin.systemd: unit=bluetooth.service enabled=true state=started
-
 - name: Enable on-demand printing service
   ansible.builtin.systemd: unit=cups.socket enabled=true state=started
-
 - name: Enable regular firmware update lookup
   ansible.builtin.systemd: unit=fwupd-refresh.timer enabled=true state=started
 
@@ -201,9 +202,14 @@
   community.general.pacman:
     state: present
     name:
+    # Fonts
     - otf-vollkorn
     - ttf-fira-go
+    # Themes
     - numix-circle-icon-theme-git
+    # Icon & Gtk theme for material-shell
+    - tela-icon-theme
+    - plata-theme
     # RSS reader
     - newsflash
   ignore_errors: true
