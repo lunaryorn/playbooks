@@ -19,8 +19,6 @@
     - avidemux-qt
     # Gaming
     - steam
-    # IDEs
-    - intellij-idea-community-edition
 
 - name: Start smartcard service for eID
   ansible.builtin.systemd: unit=pcscd.socket state=started enabled=true
