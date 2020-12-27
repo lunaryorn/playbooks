@@ -224,6 +224,7 @@
     - newsflash
     # Notes & todo
     - nb
+    - todosh
     # Tools for nb; these should be opt-deps, but the AUR package doesn't list those
     - ripgrep-all
     - readability-cli
