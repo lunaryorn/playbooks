@@ -129,6 +129,8 @@
     - ttf-ubuntu-font-family
     - ttf-fira-mono
     - ttf-fira-sans
+    # Tools for nb
+    - pandoc
     # Dependencies of my scripts
     - python-keyring
 - name: Install optional dependencies
@@ -145,6 +147,14 @@
       - gtkspell3
       # libva: Intel chipsets
       - intel-media-driver
+      # nb: rendered note display
+      - w3m
+      # ripgrep-all (AUR pkg, see below): Additional search adapters
+      - tesseract
+      - graphicsmagick
+      # tesseract: Data models
+      - tesseract-data-deu
+      - tesseract-data-eng
 
 - name: Manage flatpak permissions
   community.general.flatpak: name=com.github.tchx84.Flatseal state=present
@@ -212,4 +222,9 @@
     - plata-theme
     # RSS reader
     - newsflash
+    # Notes & todo
+    - nb
+    # Tools for nb; these should be opt-deps, but the AUR package doesn't list those
+    - ripgrep-all
+    - readability-cli
   ignore_errors: true
