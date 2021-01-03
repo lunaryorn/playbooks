@@ -219,8 +219,14 @@
     - plata-theme
     # Notes & todo
     - nb
-    - todosh
-    # Tools for nb; these should be opt-deps, but the AUR package doesn't list those
+    - todotxt
+  ignore_errors: true
+- name: Install optional AUR packages
+  community.general.pacman:
+    state: present
+    extra_args: --asdeps
+    name:
+    # nb: additional tools
     - ripgrep-all
     - readability-cli
   ignore_errors: true
