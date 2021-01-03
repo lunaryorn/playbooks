@@ -106,7 +106,7 @@
     - ripgrep
     - bat
     - mdcat
-    - ranger
+    - nnn
     # Editor
     - code
     - neovim
@@ -123,11 +123,6 @@
     - jq
     # Scripting
     - python-systemd
-- name: Remove unused packages
-  community.general.pacman:
-    state: absent
-    extraargs: --recursive
-    name: [nnn]
 
 - name: "Configure kernel modules"
   ansible.builtin.copy:
