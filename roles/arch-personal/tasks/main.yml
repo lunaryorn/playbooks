@@ -23,9 +23,6 @@
 - name: Start smartcard service for eID
   ansible.builtin.systemd: unit=pcscd.socket state=started enabled=true
 
-- name: Install Skype flatpak
-  community.general.flatpak: name=com.skype.Client state=present
-
 - name: Install AUR packages
   pacman:
     state: present

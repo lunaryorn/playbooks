@@ -76,16 +76,11 @@
     - bluez
     - sane
     # Desktop themes
-    - xcursor-pinux
     - materia-gtk-theme
-    # Sandboxing for proprietary desktop apps
-    - flatpak
-    - xdg-desktop-portal-gtk
     # Desktop apps
     - keepassxc
     - firefox
     - firefox-i18n-de
-    - feedreader
     - zathura
     - signal-desktop
     - remmina
@@ -154,9 +149,14 @@
       # tesseract: Data models
       - tesseract-data-deu
       - tesseract-data-eng
-
-- name: Manage flatpak permissions
-  community.general.flatpak: name=com.github.tchx84.Flatseal state=present
+- name: Remove unneeded packages
+  community.general.pacman:
+    state: absent
+    extra_args: --recursive
+    name:
+    - xcursor-pinux
+    - feedreader
+    - flatpak
 
 - name: Enable network manager
   ansible.builtin.systemd: unit=NetworkManager.service enabled=true state=started
@@ -214,13 +214,9 @@
     # Fonts
     - otf-vollkorn
     - ttf-fira-go
-    # Themes
-    - numix-circle-icon-theme-git
     # Icon & Gtk theme for material-shell
     - tela-icon-theme
     - plata-theme
-    # RSS reader
-    - newsflash
     # Notes & todo
     - nb
     - todosh
@@ -228,3 +224,9 @@
     - ripgrep-all
     - readability-cli
   ignore_errors: true
+- name: Remove unused AUR packages
+  community.general.pacman:
+    state: absent
+    extra_args: --recursive
+    name:
+    - newsflash
