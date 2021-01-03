@@ -3,21 +3,22 @@
     state: present
     name:
     - gdm
-    - gnome-shell
-    - gnome-shell-extensions
-    - gnome-tweaks
     - gnome-calculator
     - gnome-calendar
     - gnome-characters
     - gnome-clocks
     - gnome-disk-utility
     - gnome-font-viewer
+    - gnome-keyring
     - gnome-logs
-    - gnome-screenshot
-    - gnome-system-monitor
-    - gnome-weather
     - gnome-maps
+    - gnome-screenshot
+    - gnome-shell
+    - gnome-shell-extensions
+    - gnome-system-monitor
     - gnome-terminal
+    - gnome-tweaks
+    - gnome-weather
     - seahorse
     - file-roller
     - yelp
