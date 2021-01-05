@@ -68,7 +68,6 @@
     - networkmanager
     - avahi
     - nss-mdns
-    - firewalld
     # Desktop services
     - cups
     - system-config-printer
@@ -162,8 +161,6 @@
   ansible.builtin.systemd: unit=NetworkManager.service enabled=true state=started
 - name: Enable Avahi Daemon for mDNS
   ansible.builtin.systemd: unit=avahi-daemon.service enabled=true state=started
-- name: Enable firewall daemon
-  ansible.builtin.systemd: unit=firewalld.service enabled=true state=started
 - name: Enable multicast DNS name resolution
   ansible.builtin.lineinfile:
     path: /etc/nsswitch.conf
@@ -177,6 +174,16 @@
     line: MulticastDNS=no
   notify:
     - Restart systemd-resolved
+
+# Stop and uninstall firewalld
+- name: Stop and disable firewall daemon
+  ansible.builtin.systemd: unit=firewalld.service enabled=false state=stopped
+- name: Uninstall firewalld
+  community.general.pacman:
+    state: absent
+    extra_args: --recursive
+    name:
+    - firewalld
 
 # See <https://wiki.archlinux.org/index.php/Systemd-homed#polkit_does_not_detect_groups_of_systemd-homed_users>
 # and <https://bugs.archlinux.org/task/67658>
