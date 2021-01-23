@@ -1,5 +1,0 @@
-- name: Allow traffic to Kubernetes API server
-  community.general.ufw:
-    port: "6443"
-    rule: allow
-    comment: k0s kubernetes API server
